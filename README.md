@@ -1,0 +1,38 @@
+# Personal Job Search Agent
+
+Foundation for a modular Python CLI that will eventually support job-description analysis, resume optimization, recruiter outreach, and application tracking.
+
+## Status
+
+This initial version contains architecture and infrastructure only. JD analysis, resume tailoring, email sending, and LinkedIn integration are intentionally not implemented.
+
+## Setup
+
+```bash
+python -m venv .venv
+# Windows: .venv\Scripts\Activate.ps1
+pip install -e ".[dev]"
+Copy-Item .env.example .env
+```
+
+Set values in `.env` or in the environment. Secrets are represented with `SecretStr` and are never included in configuration output.
+
+## Run
+
+```bash
+job-agent --help
+job-agent version
+job-agent init-db
+```
+
+The CLI is a thin entry point. `ApplicationOrchestrator` coordinates future workflows, while JD, resume, outreach, LLM, and storage modules own their respective boundaries. The LLM contract is provider-independent; Gemini is the initial adapter.
+
+The master LaTeX resume and generated application artifacts belong under the configured resume storage path. Runtime data is ignored by Git.
+
+## Test
+
+```bash
+pytest
+```
+
+Tests use temporary directories and do not require a Gemini API key or network access.
