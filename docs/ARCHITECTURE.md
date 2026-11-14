@@ -38,15 +38,15 @@ The project uses a modular monolithic architecture. A single application coordin
 | `src/agent/` | Central orchestration and workflow coordination. | `ApplicationOrchestrator` accepts storage and LLM dependencies and initializes infrastructure. |
 | `src/cli/` | Typer commands and command-line startup. | Provides `version` and `init-db`; no business workflow logic. |
 | `src/config/` | Validated environment-backed configuration. | `Settings` supports the Gemini key, provider, model, database path, and resume storage path. |
-| `src/jd/` | Future job-description ingestion and analysis. | Boundary only; workflow not implemented. |
+| `src/jd/` | Job-description models, extraction, analysis, retrieval, and service coordination. | Models, text/PDF/URL extractors, `JDService`, `JDAnalyzer`, and the repository contract exist. Retrieval supports lookup, newest-first listing, analysis inspection, and status/error inspection. |
 | `src/resume/` | Future LaTeX resume management and PDF compilation. | Boundary only; tailoring not implemented. |
 | `src/outreach/` | Future recruiter outreach preparation and sending. | Boundary only; email automation not implemented. |
 | `src/llm/` | Provider-independent LLM contract and provider adapters. | `LLMProvider` protocol and Gemini adapter skeleton exist; API operations are not implemented. |
-| `src/storage/` | SQLite access and persistence infrastructure. | Database bootstrap creates the initial `applications` table. |
-| `tests/` | Unit and integration coverage for the foundation. | Covers settings, CLI startup, orchestrator initialization, and SQLite initialization. |
+| `src/storage/` | SQLite access and persistence infrastructure. | Database bootstrap creates the initial `applications` table; `SQLiteJDRepository` persists job-description records. |
+| `tests/` | Unit and integration coverage for the foundation. | Covers settings, CLI startup, orchestrator initialization, SQLite persistence, extraction, analysis, retries, and retrieval inspection. |
 
 The `config/` directory contains configuration guidance, while `data/` is reserved for private runtime data and resume artifacts. Both remain outside application business logic.
 
 ## Relationships
 
-The CLI loads configuration and assembles dependencies for the orchestrator. The orchestrator coordinates specialized modules, including the LLM provider and storage boundary. Future JD, resume, and outreach workflows will depend on interfaces and validated models rather than CLI-specific code. SQLite provides initial persistence, and the LLM provider protocol isolates workflow code from Gemini-specific details.
+The CLI loads configuration and assembles dependencies for the orchestrator. The orchestrator coordinates specialized modules, including the LLM provider and storage boundary. `JDService` selects an injected extractor, normalizes its output, and persists a pending `JobDescription` through the `JDRepository` contract. Its `create_and_analyze` workflow then delegates the persisted record to `JDAnalyzer`, while `analyze` can retry an existing record without repeating extraction. `JDAnalyzer` requests schema-shaped JSON through the provider boundary, validates it with Pydantic, applies controlled output and transient retries, and persists a completed or failed status without discarding the source record. `JDService.get_by_id`, `list_all`, `get_analysis`, and `get_status` inspect persisted records without invoking extraction or analysis. SQLite provides persistence behind `SQLiteJDRepository`; records currently use integer auto-increment IDs, and typed provider errors keep authentication failures distinct from retryable rate-limit and transient failures.

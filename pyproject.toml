@@ -9,9 +9,12 @@ description = "Foundation for a personal AI-powered job application agent."
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+    "beautifulsoup4>=4.12,<5.0",
     "google-genai>=1.0.0,<2.0.0",
+    "httpx>=0.28,<1.0",
     "pydantic>=2.7,<3.0",
     "pydantic-settings>=2.2,<3.0",
+    "pypdf>=5.0,<7.0",
     "typer>=0.12,<1.0",
 ]
 
