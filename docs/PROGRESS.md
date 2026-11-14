@@ -22,7 +22,7 @@ The local repository confirms a Git `main` branch, an `origin` remote, the found
 
 ## Milestone 2 — Job Description Intelligence
 
-**Status:** Not started
+**Status:** In progress
 
 ### Objective
 
@@ -31,7 +31,23 @@ The local repository confirms a Git `main` branch, an `origin` remote, the found
 - Identify skills, qualifications, responsibilities, and experience expectations.
 - Produce validated structured output.
 
-No individual implementation task is marked complete in this milestone because the existing repository contains only the module boundary.
+Implemented within this milestone:
+
+- Job description input, analysis, and persisted aggregate models.
+- Common extractor protocol.
+- Text, PDF, and URL extraction.
+- `JDService` orchestration with injected extractors.
+- `JDRepository` contract and SQLite implementation.
+- Persistence and extraction integration tests.
+- `JDAnalyzer` LLM workflow with validated JSON output and completed/failed persistence states.
+- Controlled malformed-output and transient-provider retries with persisted failure diagnostics.
+- `JDService` integration for complete create/extract/persist/analyze workflows and retrying failed analysis without re-extraction.
+- JD retrieval and inspection through repository and service APIs:
+  - Retrieve one persisted JD by ID.
+  - List all persisted JDs newest first.
+  - Inspect stored analysis and analysis status/error diagnostics.
+  - Reconstruct nested Pydantic models and preserve source metadata.
+  - Retrieve without invoking extractors or LLM providers.
 
 ## Milestone 3 — Resume Intelligence and Tailoring
 
@@ -59,7 +75,7 @@ Planned scope includes startup and YC founder discovery and LinkedIn outreach. L
 
 ## Current focus
 
-Documentation and project tracking are now established as the source of truth. The next implementation focus is Milestone 2: Job Description Intelligence.
+Documentation and project tracking are established as the source of truth. Milestone 2 now includes JD ingestion, persistence, analysis, retry diagnostics, and retrieval/inspection APIs. A dedicated CLI for these workflows remains future work.
 
 ## Blockers
 
@@ -67,4 +83,4 @@ No current implementation blocker is recorded. Gemini credentials are not requir
 
 ## Next milestone
 
-Begin Milestone 2 by defining the job-description input boundary and validated structured output models, followed by ingestion and analysis behavior.
+Expose the completed JD workflows through a thin CLI interface, while keeping extraction, analysis, and retrieval independent of command-line concerns.

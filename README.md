@@ -1,10 +1,10 @@
 # Personal Job Search Agent
 
-Foundation for a modular Python CLI that will eventually support job-description analysis, resume optimization, recruiter outreach, and application tracking.
+Modular Python CLI foundation for job-description ingestion, analysis, retrieval, resume optimization, recruiter outreach, and application tracking.
 
 ## Status
 
-This initial version contains architecture and infrastructure only. JD analysis, resume tailoring, email sending, and LinkedIn integration are intentionally not implemented.
+JD ingestion, persistence, analysis workflows, and retrieval/inspection APIs are implemented. Resume tailoring, email sending, application tracking, and LinkedIn integration are not yet implemented. The current CLI exposes only startup commands; JD workflow commands remain future work.
 
 ## Setup
 
@@ -26,6 +26,8 @@ job-agent init-db
 ```
 
 The CLI is a thin entry point. `ApplicationOrchestrator` coordinates future workflows, while JD, resume, outreach, LLM, and storage modules own their respective boundaries. The LLM contract is provider-independent; Gemini is the initial adapter.
+
+The JD service supports text, PDF, and URL ingestion, persisted analysis status/error inspection, lookup by ID, and newest-first listing through its Python API. The current SQLite schema uses integer auto-increment IDs.
 
 The master LaTeX resume and generated application artifacts belong under the configured resume storage path. Runtime data is ignored by Git.
 
